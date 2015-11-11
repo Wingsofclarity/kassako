@@ -1,0 +1,35 @@
+public class Simulation {
+    Store s;
+    double growth = 0;
+    double curgrowth = 0;
+    
+    int a = 0;
+
+    Simulation (int regnum, double growth){
+	this.growth=growth;
+	s = new Store(regnum);
+    }
+    
+    public void step(int a){
+	a = Math.abs(a);
+	while (a >0){
+	    step();
+	    a--;
+	}
+    }
+    
+    public void step() {
+	curgrowth+=growth;
+	while (curgrowth>=1){
+	    s.add_customer("Customer "+a);
+	    curgrowth--;
+	    a++;
+	}
+	s.step();
+
+    }
+    
+    public String toString() {
+	return s.toString()+"\n---->"+s.numCustomers();
+    }
+}
