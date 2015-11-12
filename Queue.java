@@ -27,6 +27,14 @@ public class Queue <ET>{
 	}
 	if (size()==0){
 	    first = newLast;
+
+
+
+
+
+
+
+
 	}
 	else {
 	    if (last==null){}
@@ -60,33 +68,25 @@ public class Queue <ET>{
 	    while (curnode.next.next!=null){
 		curnode=curnode.next;
 	    }
+	    last = curnode;
+	    curnode.next=null;
 	}
-	last = curnode;
-	curnode.next=null;
+	else {
+	    last = null;
+	    first = null;
+	}
 	return elm;
     }
-
-    public void print_test(){
-	Node<ET> curnode = first;
-	if (curnode.next!=null){
-	    while (curnode.next.next!=null){
-		curnode=curnode.next;
-	    }
-	}
-	System.out.println(curnode.toString());
-    }
-    
-
     public final ET head(){
 	if (first == null) return null;
 	return first.elm;
     }
     
-    public String toString(){
+    public final String toString(){
 	return toString("    ", "\n");
     }
 
-    public String toString(String prefix, String subfix){
+    public final String toString(String prefix, String subfix){
 	if (size()==0) return prefix+"'Empty'"+subfix;
 	Node<ET> curNode = first;
 	String s = prefix+curNode.toString() + subfix;
@@ -106,5 +106,26 @@ public class Queue <ET>{
 	    i++;
 	}
 	return i;
+    }
+
+    public void forall(ForAllHandler<ET> f){
+	Node<ET> curNode = first;
+	if (first==null) return;
+	while (curNode!=null) {
+	    f.handle(curNode.elm);
+	    curNode=curNode.next;
+	}
+    }
+
+    public void test(){
+	forall(new ForAllHandler<ET>() {
+		public void handle(ET elem) {
+		    System.out.println(elem);
+		} 
+	});
+    }
+
+    public static interface ForAllHandler<ET> {
+	public void handle(ET elem);
     }
 }

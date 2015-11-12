@@ -5,29 +5,50 @@ public class Store {
     private Queue<Customer> outskirt;
     private int entered = 0;
     private int exited = 0;
+    private int total_wait = 0;
+    private int max_wait = 0;
     
 
     Store(){
-	this(5);
+	this(5,4);
     }
 
-    Store (int numRs){
+    Store (int numRs, int overloadLimit){
 	rs = new Register[numRs];
 	for (int i = 0; i<numRs; i++){
 	    rs[i] = new Register();
 	}
 	outskirt = new Queue<Customer>();
+	this.overloadLimit = overloadLimit;
     }
     
     public void step(){
+
+	//Register work.
 	for (int i = 0; i<rs.length; i++) {
-	    rs[i].work();
+	    rs[i].incWait();
+	    if (rs[i].head()==null) {}
+	    else if (rs[i].head().numWares()>0){
+		rs[i].head().takeWare();
+	    }
+	    else {
+		Customer leaving = rs[i].pop();
+		total_wait+=leaving.waitTime();
+		if (max_wait < leaving.waitTime()){
+		    max_wait = leaving.waitTime();
+		}
+		exited++;
+	    }
 	}
+
+	//Customer movment
 	moveCustomers();
+
+	//Register management.
 	if (isOverloaded((double) numCustomers(), (double) numOpenReg())) {
 	    openRegister();
 	}
-	else if (!isOverloaded((double) numCustomers(), (double) numOpenReg())) {
+	else if (isUnderloaded((double) numCustomers(), (double) numOpenReg())) {
 	    closeRegister();
 	}
     }
@@ -36,12 +57,15 @@ public class Store {
 	Register r = shortOpen();
 	if (r==null) return;
 	while (numOpenReg()>0 && outskirt.size()>0){
-	    r.push(outskirt.pop());
+	    shortOpen().push(outskirt.pop());
 	}
-	
+
 	for (int i = 0; i<rs.length; i++){
-	    if (isOverloaded(rs[i].size(),r.size())){
-		r.push(rs[i].take_last());
+	    r = shortOpen();
+	    if (rs[i]!=r){
+		while (isOverloaded(rs[i].size(),r.size()+1)){
+		    r.push(rs[i].take_last());
+		}
 	    }
 	}
     }
@@ -63,14 +87,19 @@ public class Store {
     }
 
     private final boolean isOverloaded(double t, double n){
-	if (n==0 && t>0) return true;
-	else if (n==0 && t<=0) return false;
+	if (t>0 && n==0) return true;
+	else if (t<=0 && n==0) return false;
 	else return ((t/n)>overloadLimit);
     }
-
+    
+    private final boolean isUnderloaded(double t, double n){
+	if (t>0 && n<=1) return false;
+	else return ((t/n)*(overloadLimit/2)<overloadLimit);
+    }
     
     public void add_customer(Customer cus) {
 	Register a = shortOpen();
+	entered++;
 	if (a==null) {
 	    outskirt.add_element(cus);
 	    return;
@@ -78,7 +107,7 @@ public class Store {
 	a.add_element(cus);
     }
 
-    public String toString(){
+    public final String toString(){
 	String s = '\n'+name+" has "+rs.length+" registers.\n";
 	for (int i = 0; i<rs.length; i++) {
 	    s += "Register "+i;
@@ -108,7 +137,7 @@ public class Store {
 	Register a = null;
 	boolean foundone = false;
 	
-	for (int i = rs.length-1; i>=0; i--) { //
+	for (int i = rs.length-1; i>=0; i--) { 
 	    if ((rs[i].isOpen() && !foundone) ||
 		(rs[i].isOpen() && rs[i].size()<a.size())){
 		a = rs[i];
@@ -118,7 +147,7 @@ public class Store {
 	return a;
     }
 
-    public final int numOpenReg() {
+    public final int numOpenReg(){
 	int a = 0;
 	for (int i = 0; i<rs.length; i++) {
 	    if (rs[i].isOpen()) a++;
@@ -126,7 +155,7 @@ public class Store {
 	return a;
     }
 
-    public final int numCustomers() {
+    public final int numCustomers(){
 	int a = 0;
 	for (int i = 0; i<rs.length; i++) {
 	    a+=rs[i].size();
@@ -135,7 +164,7 @@ public class Store {
 	return a;
     }
 
-    public final int numVisits() {
+    public final int numVisits(){
 	return entered;
     }
 
@@ -143,7 +172,20 @@ public class Store {
 	return entered - exited;
     }
     public void setOverloadLimit(int a){
+	if (a<1) a=1;
 	overloadLimit = a;
+    }
+    public final int max_wait(){
+        return max_wait;
+    }
+    public final int total_wait(){
+	return total_wait;
+    }
+    public final int entered(){
+	return entered;
+    }
+    public final int exited(){
+	return exited;
     }
 	
 }

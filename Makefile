@@ -7,7 +7,7 @@ comp: Queue.class
 
 run: comp
 	@echo Running.
-	@java Simulator
+	@java Simulator 3 0.5 1 90 900
 
 clean:
 	@echo Cleaning.

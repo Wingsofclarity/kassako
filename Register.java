@@ -21,11 +21,11 @@ public class Register extends Queue<Customer>{
 	return isOpen;
     }
 
-    public void work(){
-	if (head()==null) return;
-	if (head().numWares()>0){
-	    head().takeWare();
-	}
-	else pop();
+    public void incWait(){
+	forall(new ForAllHandler<Customer>() {
+		public void handle (Customer elm){
+		    elm.incWait();
+		}
+	    });
     }
 }

@@ -19,7 +19,11 @@ clean:
 Queue.class: Queue.java
 	@$(JC) $^
 
+test_q: Queue_test.java
+	@$(JC) $^
+	@java Queue_test
 
-
+Queue_test.java: Queue.java Register.java Store.java
+	@$(JC) $^
 
 cr: clean comp run

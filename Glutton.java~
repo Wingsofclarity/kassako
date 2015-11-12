@@ -1,0 +1,28 @@
+public class Glutton extends Customer{
+    private dobule gluttony = 0.2;
+    private double hunger = 0;
+    private int eaten = 0;
+
+    Glutton (boolean rand, int max_wares){
+	super(rand, max_wares);
+	name+=" glutton.";
+    }
+    
+    public void incWait(){
+	super.incWait();
+	if (hunger>Math.random()){
+	    eat();
+	    hunger = 0;
+	}
+	else {
+	    hunger+=gluttony*0.5;
+	}
+    }
+
+    private void eat(){
+	if (wares>1){
+	    wares--;
+	    eaten++;
+	}
+    }
+}
