@@ -79,35 +79,6 @@ public class Queue <ET> {
 	return first.elm;
     }
 
-    public ET head_b(){
-	try {
-	    return first.elm;	    
-	}
-	catch (NullPointerException ex){
-	    return null;
-	} 
-    }
-    
-    public ET head_c(){
-	try {
-	    return first.elm;	    
-	}
-	catch (NullPointerException ex){
-	    issues++;
-	    return null;
-	}
-    }
-
-    public ET head_d() {
-	try {
-	    return first.elm;	    
-	}
-	catch (NullPointerException ex){
-	    exception(ex);
-	    return null;
-	}
-    }
-
     @Overriding
     public final String toString(){
 	return toString("    ", "\n");
