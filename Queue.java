@@ -1,7 +1,6 @@
 public class Queue <ET> {
     private Node<ET> first = null;
     private Node<ET> last = null;
-    private int issues = 0;
 
     private class Node<ET>{
 	ET elm;
@@ -126,16 +125,6 @@ public class Queue <ET> {
 
     public static interface ForAllHandler<ET> {
 	public void handle(ET elem);
-    }
-
-    public int getIssues(){
-	return issues;
-    }
-
-    private void exception(Exception ex) {
-	System.out.println("Exception in queue. Printing queue and recasting exception.");
-	System.out.println(toString());
-	throw new RuntimeException(ex);
     }
     
 }
