@@ -28,7 +28,7 @@ public class Simulator{
 
 	System.out.println("Final store: ");
 	System.out.println(s);
-	System.out.println("");
+	System.out.println();
 	System.out.println("Simulation finished!");
     }
 }

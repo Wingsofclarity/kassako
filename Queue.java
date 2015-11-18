@@ -1,6 +1,7 @@
-public class Queue <ET>{
+public class Queue <ET> {
     private Node<ET> first = null;
     private Node<ET> last = null;
+    private int issues = 0;
 
     private class Node<ET>{
 	ET elm;
@@ -13,10 +14,13 @@ public class Queue <ET>{
 	public String toString(){
 	    return elm.toString();
 	}
+
+	public boolean isLast(){
+	    return this==last;
+	}
+
     }
-    
-    Queue (){
-    }
+   
 
     public void add_element(ET elm){
 	Node<ET> newLast =  new Node<ET>(elm);
@@ -27,14 +31,6 @@ public class Queue <ET>{
 	}
 	if (size()==0){
 	    first = newLast;
-
-
-
-
-
-
-
-
 	}
 	else {
 	    if (last==null){}
@@ -77,11 +73,42 @@ public class Queue <ET>{
 	}
 	return elm;
     }
+    
     public final ET head(){
 	if (first == null) return null;
 	return first.elm;
     }
+
+    public ET head_b(){
+	try {
+	    return first.elm;	    
+	}
+	catch (NullPointerException ex){
+	    return null;
+	} 
+    }
     
+    public ET head_c(){
+	try {
+	    return first.elm;	    
+	}
+	catch (NullPointerException ex){
+	    issues++;
+	    return null;
+	}
+    }
+
+    public ET head_d() {
+	try {
+	    return first.elm;	    
+	}
+	catch (NullPointerException ex){
+	    exception(ex);
+	    return null;
+	}
+    }
+
+    @Overriding
     public final String toString(){
 	return toString("    ", "\n");
     }
@@ -90,6 +117,7 @@ public class Queue <ET>{
 	if (size()==0) return prefix+"'Empty'"+subfix;
 	Node<ET> curNode = first;
 	String s = prefix+curNode.toString() + subfix;
+	
 	while (curNode.next!=null) {
 	    curNode=curNode.next;
 	    s+=prefix+curNode.toString() + subfix;
@@ -128,4 +156,15 @@ public class Queue <ET>{
     public static interface ForAllHandler<ET> {
 	public void handle(ET elem);
     }
+
+    public int getIssues(){
+	return issues;
+    }
+
+    private void exception(Exception ex) {
+	System.out.println("Exception in queue. Printing queue and recasting exception.");
+	System.out.println(toString());
+	throw new RuntimeException(ex);
+    }
+    
 }
